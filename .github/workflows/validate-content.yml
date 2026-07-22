@@ -20,7 +20,7 @@ jobs:
       - name: Get changed content files
         id: changed
         if: github.event_name == 'pull_request'
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v46
         with:
           files: 'src/content/**/*.md'
 
