@@ -44,8 +44,16 @@ function extractFormField(markdown: string, label: string): string {
     new RegExp(`(?:^|\\n)### ${label}[ \\t]*\\n+([\\s\\S]*?)(?=\\n### |\\n## |$)`),
   );
   if (!match) return "";
-  // Strip HTML comments (used as inline instructions in textarea value: fields)
-  const value = match[1].replace(/<!--[\s\S]*?-->/g, "").trim();
+  // Strip HTML comments (used as inline instructions in textarea value: fields).
+  // Apply repeatedly to avoid incomplete multi-character sanitization where a new
+  // comment opener can appear after a prior replacement.
+  let value = match[1];
+  let previous: string;
+  do {
+    previous = value;
+    value = value.replace(/<!--[\s\S]*?-->/g, "");
+  } while (value !== previous);
+  value = value.trim();
   return value === NO_RESPONSE ? "" : value;
 }
 
