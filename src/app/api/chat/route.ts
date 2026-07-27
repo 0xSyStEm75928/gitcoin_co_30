@@ -194,7 +194,7 @@ ${context ? `## Retrieved context\n\n${context}` : "## Retrieved context\n\nNoth
     return result.toUIMessageStreamResponse();
   } catch (err) {
     console.error("[chat] Error:", err);
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
