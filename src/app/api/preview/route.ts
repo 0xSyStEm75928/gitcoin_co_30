@@ -167,6 +167,11 @@ export async function GET(req: Request) {
     );
   }
 
+  if (!/^[1-9]\d*$/.test(issue)) {
+    return Response.json({ error: "Invalid issue number" }, { status: 400 });
+  }
+  const safeIssue = String(Number(issue));
+
   const config = CONTENT_TYPES[type];
   if (!config) {
     return Response.json(
@@ -176,7 +181,7 @@ export async function GET(req: Request) {
   }
 
   const res = await fetch(
-    `https://api.github.com/repos/${REPO}/issues/${issue}`,
+    `https://api.github.com/repos/${REPO}/issues/${safeIssue}`,
     { headers: ghHeaders(ghToken), next: { revalidate: 0 } },
   );
 
