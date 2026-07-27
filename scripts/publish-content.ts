@@ -207,23 +207,26 @@ export async function publishContent(
   const yamlList = (items: string[]) =>
     items.length > 0 ? items.map((i) => `  - ${i}`).join("\n") : "";
 
+  const escapeYamlDoubleQuoted = (value: string) =>
+    value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
   const yamlTagList = (items: string[]) =>
-    items.length > 0 ? items.map((i) => `  - "${i.replace(/"/g, '\\"')}"`).join("\n") : "";
+    items.length > 0 ? items.map((i) => `  - "${escapeYamlDoubleQuoted(i)}"`).join("\n") : "";
 
   const tagsYaml = yamlTagList(metadata.tags || []);
 
   let frontmatter = `---
 id: '${existingId || Date.now()}'
 slug: ${slug}
-name: "${issue.title.replace(titlePrefix, "").replace(/"/g, '\\"')}"
-shortDescription: "${(metadata.shortDescription || "").replace(/"/g, '\\"')}"`;
+name: "${escapeYamlDoubleQuoted(issue.title.replace(titlePrefix, ""))}"
+shortDescription: "${escapeYamlDoubleQuoted(metadata.shortDescription || "")}"`;
 
   if (banner) frontmatter += `\nbanner: ${banner}`;
   if (logo) frontmatter += `\nlogo: ${logo}`;
   if (metadata.featured) frontmatter += `\nfeatured: true`;
 
   const authorsYaml = authors.length > 0
-    ? `\nauthors:\n${authors.map((a) => `  - "${a.replace(/"/g, '\\"')}"`).join("\n")}`
+    ? `\nauthors:\n${authors.map((a) => `  - "${escapeYamlDoubleQuoted(a)}"`).join("\n")}`
     : "";
 
   frontmatter += `
